@@ -1,0 +1,193 @@
+---
+title: "Practical 19"
+author: "Yash Jaiswal"
+date: '25237765036'
+output: html_document
+---
+
+
+## Aim
+
+To examine whether the median amount to be spent on a birthday gift by
+unemployed students is lower than that of employed students using the
+Mann-Whitney U test at the 1% level of significance.
+
+## Practical
+
+The following data give the amount (in rupees) to be spent on a birthday
+gift by unemployed and employed students.
+
+**Unemployed students:**
+
+200, 350, 500, 250, 150, 275
+
+**Employed students:**
+
+550, 500, 1000, 450, 700, 200, 500, 600, 1000
+
+We test whether the median amount to be spent by unemployed students is
+lower than that of employed students.
+
+## Theory
+
+The **Mann-Whitney U test** is a non-parametric test used to compare two
+independent samples. It is an alternative to the independent two-sample
+t-test when the assumptions of normality may not be satisfied.
+
+Let
+
+\[
+M_U = \text{Median amount for unemployed students}
+\]
+
+and
+
+\[
+M_E = \text{Median amount for employed students}.
+\]
+
+We are interested in testing whether the median amount for unemployed
+students is lower than that for employed students.
+
+## Hypotheses
+
+The null hypothesis is
+
+\[
+H_0: M_U \geq M_E
+\]
+
+against the alternative hypothesis
+
+\[
+H_1: M_U < M_E.
+\]
+
+The level of significance is
+
+\[
+\alpha = 0.01.
+\]
+
+### Test Statistic
+
+All observations from the two groups are combined and ranked from
+smallest to largest. If \(R_U\) is the sum of ranks for the unemployed
+group, then
+
+\[
+U_U = R_U - \frac{n_U(n_U+1)}{2}.
+\]
+
+Similarly,
+
+\[
+U_E = n_U n_E - U_U.
+\]
+
+The smaller of the two values is used as the Mann-Whitney U statistic.
+
+The test is one-sided because the alternative hypothesis is
+
+\[
+M_U < M_E.
+\]
+
+## Code
+
+```{r}
+# Data
+
+unemployed <- c(200, 350, 500, 250, 150, 275)
+employed <- c(550, 500, 1000, 450, 700, 200, 500, 600, 1000)
+
+# Sample sizes
+
+n_1 <- length(unemployed)
+n_2 <- length(employed)
+
+
+# Combine the observations
+
+combined <- c(unemployed, employed)
+
+# Calculate ranks
+
+ranks <- rank(combined)
+
+# Sum of ranks for unemployed students
+
+R_1 <- sum(ranks[1:n_1])
+
+# Sum of ranks for employed students
+
+R_2 <- sum(ranks[1:n_2])
+
+
+# Calculate Mann-Whitney U statistic for unemployed group
+
+U_U <- R_U - (n_U * (n_U + 1)) / 2
+
+# Calculate U statistic for employed group
+
+U_E <- n_U * n_E - U_U
+
+# Smaller U is the Mann-Whitney U statistic
+
+U <- min(U_U, U_E)
+
+
+cat("Rank sum for unemployed students =", R_U, "\n")
+cat("U statistic for unemployed students =", U_U, "\n")
+cat("U statistic for employed students =", U_E, "\n")
+cat("Mann-Whitney U statistic =", U, "\n")
+```
+
+## Results
+
+The sum of ranks for unemployed students is
+
+\[
+R_U = 27.5.
+\]
+
+Therefore, the calculated Mann-Whitney U statistic is
+
+\[
+U_{\text{calculated}}
+=6.5.
+\]
+
+For $n_U=6, n_E=9$ at the 1% level of significance for a one-tailed test, the tabulated critical value is
+
+\[
+U_{\text{tabulated}}=10.
+\]
+
+Thus,
+
+\[
+U_{\text{calculated}}=6.5
+\]
+
+Since
+
+\[
+U_{\text{calculated}}<U_{\text{tabulated}},
+\]
+
+we **fail to reject \(H_0\)**.
+
+# Conclusion
+
+At the 1% level of significance,
+
+\[
+U_{\text{calculated}}=6.5>U_{\text{tabulated}}=5.
+\]
+
+Therefore, we fail to reject the null hypothesis.
+
+Hence, there is **insufficient evidence to conclude that the median amount
+to be spent on a birthday gift by unemployed students is lower than that
+of employed students** at the 1% level of significance.

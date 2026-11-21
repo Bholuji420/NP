@@ -1,0 +1,123 @@
+---
+title: "Practical 18"
+author: "Kapil Kumar"
+date: '25026765016'
+output: html_document
+---
+
+
+## Aim
+
+To test the manufacturer's claim that the median breaking strength of the rods is 30 pounds using the Wilcoxon Signed-Rank Test at the 1% level of significance.
+
+## Practical
+
+The breaking strength (in pounds) of a random sample of 29 rods made by a manufacturer is given as follows:
+
+$$
+19,30,28,35,23,37,36,32,40,24,
+$$
+
+$$
+31,33,21,36,30,32,26,40,38,28,
+$$
+
+$$
+30,41,22,43,25,28,24,37,17.
+$$
+
+On the basis of this sample, test the manufacturer's claim that the median breaking strength of the rods is 30 pounds using the Wilcoxon Signed-Rank Test at the 1% level of significance. Assume that the distribution of the breaking strengths is symmetric about its median.
+
+## Theory
+
+The Wilcoxon Signed-Rank Test is a non-parametric test used to test a population median.
+
+Let \(M\) denote the population median breaking strength.
+
+The hypotheses are:
+
+$$
+H_0: M = 30
+$$
+
+against
+
+$$
+H_1: M \neq 30
+$$
+
+For each observation \(X_i\), calculate the difference
+
+$$
+d_i = X_i - 30.
+$$
+
+The observations for which \(d_i=0\) are omitted. The absolute differences
+
+$$
+|d_i|
+$$
+
+are ranked from smallest to largest, with average ranks assigned to tied values. The signs of the original differences are then attached to the corresponding ranks.
+
+The Wilcoxon signed-rank statistic is based on the sum of the positive and negative ranks.
+
+The level of significance is
+
+$$
+\alpha = 0.01.
+$$
+
+Decision rule:
+
+- If \(p\text{-value} < 0.01\), we may reject \(H_0\).
+- If \(p\text{-value} \geq 0.01\), we may not reject \(H_0\).
+
+## Code
+
+```{r}
+# Data
+breaking_strength <- c(
+  19, 30, 28, 35, 23, 37, 36, 32, 40, 24,
+  31, 33, 21, 36, 30, 32, 26, 40, 38, 28,
+  30, 41, 22, 43, 25, 28, 24, 37, 17
+)
+
+# Hypothesized median
+mu0 <- 30
+
+# Wilcoxon Signed-Rank Test
+result <- wilcox.test(
+  breaking_strength,
+  mu = mu0,
+  alternative = "two.sided",
+  exact = FALSE
+)
+
+result
+
+```
+
+## Results
+
+The Wilcoxon Signed-Rank Test was performed to test the hypothesis
+
+$$
+H_0: M = 30
+$$
+
+against
+
+$$
+H_1: M \neq 30
+$$
+
+The test statistic obtained is $V = 193$ and the corresponding p-value is $p\text{-value} = 0.6654$
+
+Since $p\text{-value} > \alpha = 0.01,$ we may not reject the null hypothesis.
+
+## Conclusion
+
+At the $1\%$ level of significance, there is not sufficient evidence to conclude that the population median breaking strength of the rods differs from $30$ pounds.
+
+Hence, we conclude that the median breaking strength of the rods can be regarded as $30$ pounds.

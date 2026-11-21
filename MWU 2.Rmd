@@ -1,0 +1,176 @@
+---
+title: "Practical 20"
+author: "Yash Jaiswal"
+date: '25237765036'
+output: html_document
+---
+
+## Aim
+
+To test whether village boys are more physically fit than town boys using the Mann-Whitney U test in R.
+
+## Practical
+
+The physical fitness measurements of village boys and town boys are given below. Test whether village boys are given below. Test whether village boys are more physically fit than town boys using the Mann-Whitney U test.
+
+
+It will produce a table like:
+
+| Group | Observations |
+|---|---|
+| **Village** | 15.7, 8.2, 6.5, 7.2, 9.0, 4.5, 10.6, 12.4, 16.2, 12.9, 11.4, 5.6 |
+| **Town** | 12.7, 3.2, 11.8, 7.9, 5.6, 6.7, 12.6, 7.9, 2.7, 6.1, 3.6, 6.5, 2.8 |
+
+## Theory
+
+The **Mann-Whitney U test** is a non-parametric test used to compare two
+independent samples. It is an alternative to the independent two-sample
+t-test when the assumptions of normality may not be satisfied.
+
+Let
+
+\[
+M_V = \text{Median physical fitness measurements of village boys}
+\]
+
+and
+
+\[
+M_T = \text{Median physical fitness measurements of town boys}.
+\]
+
+We are interested in testing whether the median amount for unemployed
+students is lower than that for employed students.
+
+### Hypotheses
+
+The null hypothesis is
+
+\[
+H_0: M_V = M_T
+\]
+
+against the alternative hypothesis
+
+\[
+H_1: M_V > M_T
+\]
+
+The level of significance is
+
+\[
+\alpha = 0.01.
+\]
+
+### Test Statistic
+
+All observations from the two groups are combined and ranked from
+smallest to largest. If \(R_1\) is the sum of ranks for the unemployed
+group and \(R_2\) is the sum of ranks for the employed group, then
+
+\[
+U_1 = n_1n_2 + \frac{n_1(n_1+1)}{2} - R_1
+\]
+
+
+\[
+U_2 = n_1n_2 + \frac{n_2(n_2+1)}{2} - R_2
+\]
+
+The smaller of the two values is used as the Mann-Whitney U statistic.
+
+The test is one-sided because the alternative hypothesis is
+
+\[
+M_V > M_T
+\]
+
+## Code
+
+```{r}
+# Data
+
+village <- c(15.7, 8.2, 6.5, 7.2, 9.0, 4.5, 10.6, 12.4, 16.2, 12.9, 11.4, 5.6)
+town <- c( 12.7, 3.2, 11.8, 7.9, 5.6, 6.7, 12.6, 7.9, 2.7, 6.1, 3.6, 6.5, 2.8)
+
+# Sample sizes
+
+n1 <- length(village)
+n2 <- length(town)
+
+cat("Number of village boys:", n1)
+cat("Number of town boys:", n2)
+
+# Combine the observations
+
+combined <- c(village, town)
+
+# Calculate ranks
+
+ranks <- rank(combined)
+
+# Sum of ranks for unemployed students
+
+R1 <- sum(ranks[1:n1])
+
+# Sum of ranks for employed students
+
+R2 <- sum(ranks[1:n2])
+
+# Calculate Mann-Whitney U statistic for unemployed group
+
+U1 = (n1*n2) + ((n1*(n1+1))/2) - R1
+
+# Calculate U statistic for employed group
+
+U2 = (n1*n2) + ((n2*(n2+1))/2) - R2
+
+# Smaller U is the Mann-Whitney U statistic
+
+U <- min(U1, U2)
+
+cat("U statistic for unemployed students =", U1, "\n")
+cat("U statistic for employed students =", U2, "\n")
+cat("Mann-Whitney U statistic =", U, "\n")
+```
+
+## Results
+
+Therefore, the calculated Mann-Whitney U statistic is
+
+\[
+U_{\text{calculated}}
+= 34.
+\]
+
+For $n1=12,\ n2=13$ at the 1% level of significance for a one-tailed test, the tabulated critical value is
+
+\[
+U_{\text{tabulated}}=27.
+\]
+
+Thus,
+
+\[
+U_{\text{calculated}}=34
+\]
+
+Since
+
+\[
+U_{\text{calculated}}>U_{\text{tabulated}},
+\]
+
+we **fail to reject \(H_0\)**.
+
+# Conclusion
+
+At the 1% level of significance,
+
+\[
+U_{\text{calculated}}=34>U_{\text{tabulated}}=27.
+\]
+
+Therefore, we fail to reject the null hypothesis.
+
+Hence, there is not enough evidence to conclude that the village boys are more physically fit than town boys at 1% level of significance.

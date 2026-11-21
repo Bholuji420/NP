@@ -1,0 +1,273 @@
+---
+title: "Practical 17"
+author: "Yash Jaiswal"
+date: '25237765036'
+output: html_document
+---
+
+---
+title: "Wilcoxon Signed-Rank Test"
+author: "R Practical"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# 1. Aim
+
+To test whether the median weight of carrots is 50 kg using the Wilcoxon Signed-Rank Test at 5% level of significance.
+
+# 2. Practical
+
+The following are the weights of carrots:
+
+39, 58, 53, 46, 46, 48, 57, 47, 68, 37, 42, 40, 45, 53, 53, 57, 67, 49, 50, 40, 61, 65, 52, 54, 54, 49, 48, 50, 66, 38.
+
+We have to test whether the median weight of carrots is 50 kg using the Wilcoxon Signed-Rank Test at 5% level of significance.
+
+# 3. Theory
+
+The Wilcoxon Signed-Rank Test is a non-parametric statistical test used to test whether the median of a population is equal to a specified value.
+
+It is used when the assumptions of a parametric test such as the one-sample t-test are not appropriate.
+
+The test is performed by calculating the difference between each observation and the hypothesized median.
+
+The difference is given by:
+
+\[
+d_i = X_i - M_0
+\]
+
+where:
+
+- \(X_i\) = observed value
+- \(M_0\) = hypothesized median
+- \(d_i\) = difference between the observation and hypothesized median
+
+The zero differences are removed. The absolute values of the remaining differences are ranked from smallest to largest. In case of tied values, average ranks are assigned.
+
+The ranks are then given the signs of their original differences.
+
+The positive ranks and negative ranks are summed separately.
+
+The Wilcoxon Signed-Rank Test statistic is based on these rank sums.
+
+# 4. Hypotheses
+
+The null hypothesis is:
+
+\[
+H_0 : M = 50
+\]
+
+The alternative hypothesis is:
+
+\[
+H_1 : M \neq 50
+\]
+
+This is a two-tailed test.
+
+The level of significance is:
+
+\[
+\alpha = 0.05
+\]
+
+# 5. R Code
+
+```{r}
+
+# Enter the carrot weight data
+
+weights <- c(
+  39, 58, 53,
+  46, 46, 48,
+  57, 47, 68,
+  37, 42, 40,
+  45, 53, 53,
+  57, 67, 49,
+  50, 40, 61,
+  65, 52, 54,
+  54, 49, 48,
+  50, 66, 38
+)
+
+
+# Hypothesized median
+
+mu <- 50
+
+
+# Level of significance
+
+alpha <- 0.05
+
+
+# Display the data
+
+cat("Carrot weights:\n")
+print(weights)
+
+
+# Sample size
+
+n <- length(weights)
+
+cat("\nSample size =", n, "\n")
+
+
+# Calculate differences from hypothesized median
+
+d <- weights - mu
+
+cat("\nDifferences (Xi - 50):\n")
+print(d)
+
+
+# Remove zero differences
+
+d_nonzero <- d[d != 0]
+
+cat("\nNon-zero differences:\n")
+print(d_nonzero)
+
+n_nonzero <- length(d_nonzero)
+
+cat("\nNumber of non-zero differences =", n_nonzero, "\n")
+
+
+# Calculate absolute differences
+
+abs_d <- abs(d_nonzero)
+
+cat("\nAbsolute differences:\n")
+print(abs_d)
+
+
+# Assign ranks
+
+ranks <- rank(abs_d, ties.method = "average")
+
+cat("\nRanks:\n")
+print(ranks)
+
+
+# Create ranking table
+
+rank_table <- data.frame(
+  Difference = d_nonzero,
+  Absolute_Difference = abs_d,
+  Rank = ranks
+)
+
+cat("\nRanking table:\n")
+print(rank_table)
+
+
+# Calculate signed ranks
+
+signed_ranks <- sign(d_nonzero) * ranks
+
+rank_table$Signed_Rank <- signed_ranks
+
+cat("\nRanking table with signed ranks:\n")
+print(rank_table)
+
+
+# Calculate positive rank sum
+
+W_plus <- sum(ranks[d_nonzero > 0])
+
+cat("\nPositive rank sum W+ =", W_plus, "\n")
+
+
+# Calculate negative rank sum
+
+W_minus <- sum(ranks[d_nonzero < 0])
+
+cat("Negative rank sum W- =", W_minus, "\n")
+
+
+# Total rank
+
+total_rank <- n_nonzero * (n_nonzero + 1) / 2
+
+cat("Total rank =", total_rank, "\n")
+
+cat("W+ + W- =", W_plus + W_minus, "\n")
+
+
+# Perform Wilcoxon Signed-Rank Test
+
+test_result <- wilcox.test(
+  weights,
+  mu = mu,
+  alternative = "two.sided",
+  exact = FALSE,
+  correct = TRUE
+)
+
+
+# Display complete test result
+
+cat("\nWilcoxon Signed-Rank Test:\n")
+print(test_result)
+
+
+# Extract test statistic
+
+test_statistic <- unname(test_result$statistic)
+
+# Extract p-value
+
+p_value <- test_result$p.value
+
+
+# Display results
+
+cat("\n----------------------------------------\n")
+cat("RESULTS\n")
+cat("----------------------------------------\n")
+
+cat("Sample size =", n, "\n")
+
+cat("Hypothesized median =", mu, "kg\n")
+
+cat("Number of non-zero differences =", n_nonzero, "\n")
+
+cat("Positive rank sum W+ =", W_plus, "\n")
+
+cat("Negative rank sum W- =", W_minus, "\n")
+
+cat("Wilcoxon test statistic V =", test_statistic, "\n")
+
+cat("p-value =", round(p_value, 4), "\n")
+
+cat("Level of significance =", alpha, "\n")
+
+
+# Decision
+
+if (p_value < alpha) {
+
+  cat("\nDecision: Reject H0\n")
+
+} else {
+
+  cat("\nDecision: Fail to reject H0\n")
+
+}
+
+
+# Conclusion
+
+if (p_value < alpha) {
+
+  cat("\nConclusion: There is sufficient evidence at the 5% level of significance to conclude that the median weight of carrots is different from 50 kg.\n")
+
+} else {
+
+  cat("\nConclusion: There is insufficient evidence at the 5% level of significance to conclude that the median weight of carrots is different from 50 kg.\n")
+
+}
